@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cobros</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container py-5">
+    <!-- Título -->
+    <h1 class="text-center mb-4">Cuentas por Cobrar</h1>
+    
+    <!-- Barra de búsqueda -->
+    <div class="mb-4">
+      <div class="input-group">
+        <span class="input-group-text bg-light border-0">
+          <i class="bi bi-search text-muted"></i>
+        </span>
+        <input type="text" class="form-control border-0" placeholder="Nombre del pago" aria-label="Buscar pago">
+      </div>
+    </div>
+    {% for payment in list_payments %}
+    <!-- Lista cliqueable -->
+    <div class="list-group">
+      
+      <a href="{{url_details}}/{{payment[0]}}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+            {{ payment[0] }}
+          </div>
+          <span>{{ payment[1] }}</span>
+        </div>
+        <span class="text-muted">{{ payment[2] }}</span>
+      </a>
+      {%endfor%}
+      
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="d-flex justify-content-between mt-4">
+      <a href="#" class="btn btn-dark px-4 py-2">Ver más</a>
+      <a href="nuevo{{url_new}}" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+        <i class="bi bi-plus"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
