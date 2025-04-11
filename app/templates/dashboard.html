@@ -17,10 +17,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('profile') }}">Perfil</a>
+                        <a class="nav-link" href="{{ url_for('auth.profile') }}">Perfil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Salir</a>
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Salir</a>
                     </li>
                 </ul>
             </div>
@@ -48,16 +48,16 @@
         <!-- Botones divididos en secciones -->
         <div class="row text-center w-100">
             <div class="col-6 mb-4">
-                <a href="{{ url_for('accounts') }}" class="btn btn-outline-dark btn-success py-3 w-100">Por Cobrar</a>
+                <a href="{{ url_for('accounts.accounts') }}" class="btn btn-outline-dark btn-success py-3 w-100">Por Cobrar</a>
             </div>
             <div class="col-6 mb-4">
-                <a href="{{ url_for('payments') }}" class="btn btn-outline-dark btn-danger py-3 w-100">Por Pagar</a>
+                <a href="{{ url_for('payments.payments') }}" class="btn btn-outline-dark btn-danger py-3 w-100">Por Pagar</a>
             </div>
             <div class="col-6 mb-4">
-                <a href="{{ url_for('reports') }}" class="btn btn-outline-primary py-3 w-100">Estadísticas</a>
+                <a href="{{ url_for('user.reports') }}" class="btn btn-outline-primary py-3 w-100">Estadísticas</a>
             </div>
             <div class="col-6 mb-4">
-                <a href="{{ url_for('help') }}" class="btn btn-outline-warning py-3 w-100">Ayuda</a>
+                <a href="{{ url_for('user.help') }}" class="btn btn-outline-warning py-3 w-100">Ayuda</a>
             </div>
         </div>
     </div>

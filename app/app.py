@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import database as db
 
 
-# Crar la aplicación de Flask
+# Crear la aplicación de Flask
 app = Flask(__name__)
 
 # Configuración de las sesiones en Flask

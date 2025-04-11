@@ -11,3 +11,11 @@ database = mysql.connector.connect(
     password = '', # Contraseña del usuario de la base de datos
     database = 'sepagos' # Nombre de la base de datos
 )
+
+# Retornar conexión con la DB
+def get_connection():
+    return database
+
+# Definir el cursor para las consultas SQL
+def get_cursor():
+    return database.cursor()
