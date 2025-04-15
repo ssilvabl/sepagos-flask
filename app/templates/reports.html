@@ -20,6 +20,11 @@
     <div class="w-75 mb-4">
         <input type="text" class="form-control text-center" placeholder="monto_total_en_pagos" readonly>
     </div>
-    <button class="btn btn-dark px-5">Generar PDF</button>
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('accounts.export_accounts_excel') }}" class="btn btn-success"><i class="bi bi-download"></i>Generar Excel De Cobros</a>
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('payments.export_payments_excel') }}" class="btn btn-danger"><i class="bi bi-download"></i>Generar Excel De Pagos</a>
+    </div>
 </body>
 </html>

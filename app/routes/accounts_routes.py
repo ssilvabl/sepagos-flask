@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Importar módulo de la conexión a la base de datos
 from app.database import database as db
 from app.database import get_cursor, get_connection
+# Importar función para generar reporte en Excel
+from app.utils import generateExcel
 
 
 # Crear mini-módulo Blueprint
@@ -124,3 +126,10 @@ def deleteAccount(id, url = '/cobros'):
     # Confirmar consulta SQL y almacenar cambios
     db.commit()
     return redirect(url_for('user.home'))
+
+@accounts_bp.route('/reportes/cobros/excel')
+def export_accounts_excel():
+    # Instrucciones
+
+    # Retornar función para generar reporte en Excel
+    return generateExcel('cobro')

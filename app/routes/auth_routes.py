@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Importar módulo de la conexión a la base de datos
 from app.database import database as db
 from app.database import get_cursor
+# Importar mensajes de confirmación
+from app.msgValidation import msgAccessDenied
 
 
 # Crear mini-módulo (blueprint) llamado auth
@@ -120,10 +122,8 @@ def profile():
     
     # Si no hay un usuario actual en la sesión
     else:
-        # Mensaje de error
-        flash('No tienes acceso a esta sección', 'danger')
-        # Redireccionar al login
-        return redirect(url_for('auth.login'))
+        # Retornar mensaje de restricción
+        return msgAccessDenied()
 
 ###################################################################################
 

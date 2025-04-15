@@ -12,10 +12,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.database import database as db
 from app.database import get_cursor
 from .accounts_routes import accounts, newAccount, accountDetails, deleteAccount
+# Librerías para exportar archivos excel
+from flask import make_response
+import openpyxl
+from io import BytesIO
+# Importar función de generar reportes en Excel
+from app.utils import generateExcel
 
 
 # Crear mini-módulo Blueprint
 payments_bp = Blueprint('payments', '__name__')
+
+# Obtener el cursor para las consultas SQL
+cursor = get_cursor()
 
 # Ruta de Pagos
 @payments_bp.route('/pagos')
@@ -45,3 +54,12 @@ def deletePayment(id, url = '/pagos'):
 
     # Retornar función para eliminar Pagos
     return deleteAccount(id, url)
+
+
+# Ruta para generar reportes en Excel
+@payments_bp.route('/reportes/pagos/excel')
+def export_payments_excel():
+    # Instrucciones
+
+    # Retornar función para generar reporte en Excel
+    return generateExcel('pago')

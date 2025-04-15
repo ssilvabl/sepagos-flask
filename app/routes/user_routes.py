@@ -10,6 +10,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # Importar módulo de la conexión a la base de datos
 from app.database import database as db
 from app.database import get_cursor
+# Importar mensajes de confirmación
+from app.msgValidation import msgAccessDenied
 
 
 # Crear mini-módulo Blueprint
@@ -42,19 +44,24 @@ def home():
     
     # Si no existe el usuario en la sesión
     else:
-        # Mensaje de confirmación
-        flash('Debes iniciar sesión para poder acceder a esta sección.', 'warning')
-        # Redirigir a la ruta de la función login
-        return redirect(url_for('auth.login'))
+        # Retornar Mensaje de restricción
+        return msgAccessDenied()
 
 ###################################################################################
 
 # Ruta de la Lista de Guías
 @user_bp.route('/ayuda')
 def help():
+        # Instrucciones
 
-    # Renderizar vista en el navegador
-    return render_template('help.html')
+        # Validar si un usuario existe en la sesión actual
+        if 'userEmail' in session:
+            # Si existe, se retorna la vista HTML protegida con los datos de la sesión
+            return render_template('help.html', user = session['userEmail'])
+            
+        else:
+            # Retornar mensaje de restricción
+            return msgAccessDenied()
 
 ###################################################################################
 
@@ -62,8 +69,15 @@ def help():
 @user_bp.route('/ayuda/<int:id>')
 def helpDetails(id):
 
-    # Retornar vista y enviar valor de la variable id
-    return render_template('helpDetails.html', id = id)
+    # Validar si el usuario existe en la sesión actual
+    if 'userEmail' in session:
+        # Si el usuario existe
+        # Se retorna la vista HTML para el usuario y los datos de la sesión
+        return render_template('helpDetails.html', user = session['userEmail'])
+    
+    else:
+        # Mensaje de restricción
+        return msgAccessDenied()
 
 ###################################################################################
 
@@ -72,6 +86,12 @@ def helpDetails(id):
 def reports():
     # Instrucciones
 
+    # Validar si el usuario existe en la sesión para permitir el acceso a la ruta
+    if 'userEmail' in session:
+        # Si existe en la sesión
+        # Se retorna la vista HTML con los datos de la sesión
+        return render_template('reports.html', user = session['userEmail'])
     
-    # Retornar vista HTML
-    return render_template('reports.html')
+    else:
+        # Mensaje de restricción
+        return msgAccessDenied()
