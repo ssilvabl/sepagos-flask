@@ -12,6 +12,8 @@ from app.database import database as db
 from app.database import get_cursor, get_connection
 # Importar función para generar reporte en Excel
 from app.utils import generateExcel
+# Importar confirmación de la sesión
+from app.utils import validateUser
 
 
 # Crear mini-módulo Blueprint
@@ -22,6 +24,8 @@ cursor = get_cursor()
 
 # Conexión a la DB
 db = get_connection()
+
+###################################################################################
 
 # Ruta de Cobros
 @accounts_bp.route('/cobros')
@@ -37,50 +41,71 @@ def accounts(category='cobro', url_details='cobros', url_new='Cobro'):
     # Retornar vista HTML
     return render_template('payments.html', list_payments = list_payments, url_details = url_details, url_new = url_new)
 
+###################################################################################
+
 # Ruta para Añadir Cobros
 @accounts_bp.route('/nuevoCobro', methods=['GET', 'POST'])
-def newAccount(category='cobro'):
+def newAccount(url='newPayment.html', category='cobro', secure_url = 'accounts.accounts'):
     # Instrucciones
 
-    msg = ''
-    # Validar si el formulario se envió mediante la solicitud del método POST
-    if request.method == 'POST':
-        # Si se envió con el método POST
+    # Validar si existe un usuario en la sesión
+    if 'userEmail' in session:
+        # Si existe se carga el contenido
 
-        # Capturar datos del formulario (utilizando el selecctor name de HTML)
-        nombre_pago = request.form.get('nombrePago')
-        monto_inicial = request.form.get('montoInicial')
-        numero_cuotas = request.form.get('numeroCuotas')
-        fecha_inicio = request.form.get('fechaInicio')
-        fecha_fin = request.form.get('fechaFin')
+        # Validar si el formulario se envió mediante la solicitud del método POST
+        if request.method == 'POST':
+            # Si se envió con el método POST
 
-        # Insertar registro en la DB
-        cursor.execute("INSERT INTO payments (name, amount, installments, date_start, date_end, category) VALUES (%s, %s, %s, %s, %s, %s)",
-                       (nombre_pago,
-                       monto_inicial,
-                       numero_cuotas,
-                       fecha_inicio,
-                       fecha_fin,
-                       category))
-        # Confirmar y Guardar los datos de forma permanente en la base de datos
-        db.commit()
+            # Capturar datos del formulario (utilizando el selecctor name de HTML)
+            nombre_pago = request.form.get('nombrePago')
+            monto_inicial = request.form.get('montoInicial')
+            numero_cuotas = request.form.get('numeroCuotas')
+            fecha_inicio = request.form.get('fechaInicio')
+            fecha_fin = request.form.get('fechaFin')
+
+            # Obtener usuario actual de la sesión
+            currentUser = session['userEmail']
+            
+            # Buscar el ID del usuario en la DB
+            cursor.execute("SELECT id FROM users WHERE email = %s", (currentUser,))
+            # Obtener el resultado de la consulta SQL
+            id_user = cursor.fetchone()
+            id_user = id_user[0]
+
+            # Insertar registro en la DB
+            cursor.execute("INSERT INTO payments (name, amount, installments, date_start, date_end, category, id_users) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                        (nombre_pago,
+                        monto_inicial,
+                        numero_cuotas,
+                        fecha_inicio,
+                        fecha_fin,
+                        category,
+                        id_user))
+            # Confirmar y Guardar los datos de forma permanente en la base de datos
+            db.commit()
+            # Mensaje de confirmación
+            flash('¡El registro se guardó de forma correcta!', 'success')
+            return redirect(url_for(secure_url))
+
+        # Retornar vista HTML
+        return render_template('newPayment.html')
+
+    # De lo contrario
+    else:
         # Mensaje de confirmación
-        msg = '¡El registro se guardó de forma correcta!'
+        flash('Debes iniciar sesión para acceder a este contenido.', 'warning')
+        return redirect(url_for('auth.login'))
 
-    # Retornar vista HTML
-    return render_template('newPayment.html', msg = msg)
+###################################################################################
 
 # Ruta editar Cobros
 @accounts_bp.route('/cobros/<id>', methods = ['GET', 'POST'])
-def accountDetails(id):
+def accountDetails(id, secure_url = 'accounts.accounts'):
     # Instrucciones
 
     # Convertir ID en int
     id = int(id)
-
-    # Mensaje de confirmación
-    msg = ''
-
+    
     # Ejecutar consulta SQL en la DB
     cursor.execute("SELECT * FROM payments WHERE id = %s", (id,))
     # Obtener un registro del resultado de la consulta SQL
@@ -89,7 +114,8 @@ def accountDetails(id):
     # Validar si no existe el registro
     if not details:
         # Si no existe
-        msg = 'El registro que desea consultar no existe'
+        flash('El registro que desea consultar no existe', 'warning')
+        return redirect(url_for(secure_url))
 
     # Validar si enviaron datos por medio del formulario utilizando el método POST
     if request.method == 'POST':
@@ -106,26 +132,33 @@ def accountDetails(id):
         # Confirmar la actualización de los datos y almacenarlos
         db.commit()
         # Mensaje de confirmación
-        msg = 'Los datos se han actualizado correctamente'
+        flash('Los datos se han actualizado correctamente', 'success')
         # Ejecutar consulta SQL para obtener los datos de ese id de forma segura
         cursor.execute("SELECT * FROM payments WHERE id = %s", (id,))
         # Obtener un registro del resultado de la consulta SQL
         # Almacenar el resultado en la variable details
         details = cursor.fetchall()
+        return redirect(url_for(secure_url))
 
     # Retornar vista HTML y datos
-    return render_template('paymentDetails.html', pago = id, details = details, message = msg)
+    return render_template('paymentDetails.html', pago = id, details = details)
+
+###################################################################################
 
 # Ruta para eliminar Cobros y se espera un entero como parámetro
 @accounts_bp.route('/cobros/eliminar/<int:id>', methods = ['POST'])
-def deleteAccount(id, url = '/cobros'):
+def deleteAccount(id, url = '/cobros', secure_url = 'accounts.accounts'):
     # Instrucciones
 
     # Consulta SQL para eliminar registro de la DB de forma segura
     cursor.execute("DELETE FROM payments WHERE id = %s", (id,))
     # Confirmar consulta SQL y almacenar cambios
     db.commit()
-    return redirect(url_for('user.home'))
+    # Mensaje de confirmación
+    flash('Se ha eliminado un elemento', 'danger')
+    return redirect(url_for(secure_url))
+
+###################################################################################
 
 @accounts_bp.route('/reportes/cobros/excel')
 def export_accounts_excel():

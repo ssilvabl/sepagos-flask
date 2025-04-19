@@ -10,6 +10,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
+  <!-- Menú de navegación (hamburguesa) -->
+   {% include 'partials/navbar.html' %}
+
   <div class="container py-5">
     <!-- Título -->
     <h1 class="text-center mb-4">Cuentas por Cobrar</h1>
@@ -23,6 +26,21 @@
         <input type="text" class="form-control border-0" placeholder="Nombre del pago" aria-label="Buscar pago">
       </div>
     </div>
+
+    {# mensajes flash informativos #}
+      {% with messages = get_flashed_messages(with_categories=True) %}
+
+      {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+      {% endif %}
+
+    {% endwith %}
+    
     {% for payment in list_payments %}
     <!-- Lista cliqueable -->
     <div class="list-group">

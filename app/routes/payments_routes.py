@@ -38,14 +38,14 @@ def payments():
 def newPayment():
 
     # tornar función para agregar nuevos Pagos
-    return newAccount(category='pago')
+    return newAccount(url='newPayment.html', category='pago', secure_url='payments.payments')
 
 # Ruta para editar Pagos
 @payments_bp.route('/pagos/<id>', methods = ['GET', 'POST'])
 def paymentDetails(id):
 
     # Retornar función para los detalles de los Pagos
-    return accountDetails(id)
+    return accountDetails(id, secure_url = 'payments.payments')
 
 # Ruta para eliminar Pagos
 @payments_bp.route('/eliminar/<int:id>', methods = ['POST'])
@@ -53,7 +53,7 @@ def deletePayment(id, url = '/pagos'):
     # Instrucciones
 
     # Retornar función para eliminar Pagos
-    return deleteAccount(id, url)
+    return deleteAccount(id, url, secure_url = 'payments.payments')
 
 
 # Ruta para generar reportes en Excel

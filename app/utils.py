@@ -1,7 +1,7 @@
 # FUNCIONES AUXILIARES
 
 # Importar uso de sesiones
-from flask import session
+from flask import session, render_template, redirect, url_for, flash
 # Importar módulo de la conexión a la base de datos
 from app.database import database as db
 from app.database import get_cursor
@@ -58,3 +58,18 @@ def generateExcel(category):
         response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreedsheetml.sheet" # Informa al navegador del tipo de archivo
         # Retornar respuesta
         return response
+    
+
+# VALIDAR QUE EXISTA UN USUARIO EN LA SESIÓN
+def validateUser(protected_url, secure_url='auth.login'):
+    # Validar si existe un usuario en la sesión
+    if 'userEmail' in session:
+        # Si existe, se retorna la vista protegida con los datos de la sesión
+        return render_template(protected_url, user = session['userEmail'])
+    
+    # Si no existe usuario en la sesión
+    else:
+        # Mensaje de alerta
+        flash('Debes iniciar sesión para acceder a este contenido.', 'warning')
+        # Redirigir a vista segura
+        return redirect(url_for(secure_url))

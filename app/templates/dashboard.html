@@ -8,24 +8,7 @@
 </head>
 <body class="bg-light">
     <!-- Menú de navegación (hamburguesa) -->
-    <nav class="navbar navbar-light bg-light border-bottom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">SePagos</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.profile') }}">Perfil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Salir</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'partials/navbar.html' %}
 
     <!-- Contenido principal -->
     <div class="container d-flex flex-column align-items-center justify-content-center" style="height: calc(100vh - 56px);">
@@ -54,7 +37,7 @@
                 <a href="{{ url_for('payments.payments') }}" class="btn btn-outline-dark btn-danger py-3 w-100">Por Pagar</a>
             </div>
             <div class="col-6 mb-4">
-                <a href="{{ url_for('user.reports') }}" class="btn btn-outline-primary py-3 w-100">Estadísticas</a>
+                <a href="{{ url_for('user.reports') }}" class="btn btn-outline-primary py-3 w-100">Reportes</a>
             </div>
             <div class="col-6 mb-4">
                 <a href="{{ url_for('user.help') }}" class="btn btn-outline-warning py-3 w-100">Ayuda</a>
