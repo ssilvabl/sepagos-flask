@@ -11,7 +11,7 @@ CREATE TABLE users (
     -- Llave primaria con autoincremento
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50),
-    password VARCHAR(100),
+    password VARCHAR(200),
     email VARCHAR(100),
     amount INT,
     date DATETIME,

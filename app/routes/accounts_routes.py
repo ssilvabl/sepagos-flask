@@ -38,8 +38,16 @@ def accounts(category='cobro', url_details='cobros', url_new='Cobro'):
     # Recuperar resultado de la consulta a la DB
     list_payments = cursor.fetchall()
 
-    # Retornar vista HTML
-    return render_template('payments.html', list_payments = list_payments, url_details = url_details, url_new = url_new)
+    # Validar si existe un usuario en la sesión 
+    if 'userEmail' in session:
+        # Retornar la vista HTML
+        return render_template('payments.html', list_payments = list_payments, url_details = url_details, url_new = url_new)
+    else:
+        #Si no existe el usuario
+        flash('Debes iniciar sesión para acceder a este contenido', 'warning')
+        # Redirigir a vista segura
+        return redirect(url_for('auth.login'))
+
 
 ###################################################################################
 
@@ -140,8 +148,16 @@ def accountDetails(id, secure_url = 'accounts.accounts'):
         details = cursor.fetchall()
         return redirect(url_for(secure_url))
 
-    # Retornar vista HTML y datos
-    return render_template('paymentDetails.html', pago = id, details = details)
+    # Validar si el existe una sesión del usuario
+    if 'userEmail' in session:
+        # Si existe Retornar vista HTML y datos
+        return render_template('paymentDetails.html', pago = id, details = details)
+    else:
+        # Si no existe
+        # Mostrar alerta
+        flash('Debes iniciar sesión para acceder a este contenido', 'warning')
+        # Redirigir a vista segura
+        return redirect(url_for('auth.login'))
 
 ###################################################################################
 
