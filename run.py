@@ -7,7 +7,6 @@ from app import create_app
 app = create_app()
 
 # Ejecutar la app si este archivo es el principal
-def create_app():
-    if __name__ == '__main__':
-        # Ejecutar la app
-        app.run(debug=False)
+if __name__ == '__main__':
+    # Ejecutar la app
+    app.run(debug=False)
